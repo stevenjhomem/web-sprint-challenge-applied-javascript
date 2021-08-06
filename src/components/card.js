@@ -1,4 +1,3 @@
-const Card = (article) => {
   // TASK 5
   // ---------------------
   // Implement this function, which should return the markup you see below.
@@ -16,10 +15,41 @@ const Card = (article) => {
   //     <span>By { authorName }</span>
   //   </div>
   // </div>
+
+import axios from "axios";
+
   //
+const Card = (article) => {
+
+  const cardDiv = document.createElement('div');
+  const headlinelineDiv = document.createElement('div');
+  const authorDiv = document.createElement('div');
+  const imgDiv = document.createElement('div');
+  const img = document.createElement('img');
+  const authorNameSpan = document.createElement('span');
+
+  cardDiv.classList.add('card');
+  headlinelineDiv.classList.add('headline');
+  headlinelineDiv.textContent = article.headline;
+  authorDiv.classList.add('author');
+  imgDiv.classList.add('img-container');
+  img.setAttribute('src', article.authorPhoto);
+  authorNameSpan.textContent = article.authorName;
+
+  cardDiv.appendChild(headlinelineDiv);
+  cardDiv.appendChild(authorDiv);
+  authorDiv.appendChild(imgDiv);
+  imgDiv.appendChild(img);
+  authorDiv.appendChild(authorNameSpan);
+
+  cardDiv.addEventListener('click', (event) =>{
+    console.log(article.headline);
+  })
+
+  return cardDiv;
 }
 
-const cardAppender = (selector) => {
+
   // TASK 6
   // ---------------------
   // Implement this function that takes a css selector as its only argument.
@@ -28,6 +58,27 @@ const cardAppender = (selector) => {
   // Create a card from each and every article object in the response, using the Card component.
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
+
+console.log( axios.get(`http://localhost:5000/api/articles`));
+
+const cardAppender = (selector) => {
+
+  const selectorContainer = document.querySelector(selector);
+
+  axios.get(`http://localhost:5000/api/articles`)
+  .then(response =>{
+    let theArticles = response.data.articles.bootstrap.concat(response.data.articles.javascript, response.data.articles.jquery, response.data.articles.node, response.data.articles.technology);
+
+    theArticles.forEach((item) => {
+      let newCard = Card(item);
+      selectorContainer.appendChild(newCard);
+    });
+
+  })
+  .catch(error =>{
+    console.error('No information received');
+  })
+  return selectorContainer;
 }
 
 export { Card, cardAppender }
